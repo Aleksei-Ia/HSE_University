@@ -1,11 +1,11 @@
 name: CI
 
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # Triggers the workflow on push or pull request events for all branches
   push:
-    branches: [ "main" ]
+    branches: [ "*" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "*" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -15,7 +15,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -30,7 +30,6 @@ jobs:
             echo "Checking $file..."
             cat $file | docker run --rm -i hadolint/hadolint || true
           done
-
     # Lint Shell Scripts
       - name: Lint Shell Scripts
         run: |
@@ -38,14 +37,14 @@ jobs:
           for file in $(find . -name '*.sh'); do
             echo "Checking $file..."
             docker run --rm -v $(pwd):/mnt koalaman/shellcheck:stable /mnt/$file || true
+            docker run --rm -v $(pwd):/mnt koalaman/shellcheck:stable /mnt/$file > shellcheck_report.txt 2>&1 || true
           done
-
+          echo "ShellCheck completed. Review the errors in shellcheck_report.txt if any."
     # Lint Python Scripts
       - name: Install Python linters
         run: |
           echo "Installing Python linters"
           pip install flake8 pylint
-
       - name: Lint Python Scripts
         run: |
           echo "Linting Python scripts"
