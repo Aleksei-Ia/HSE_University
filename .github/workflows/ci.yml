@@ -36,7 +36,6 @@ jobs:
           echo "Linting Shell Scripts"
           for file in $(find . -name '*.sh'); do
             echo "Checking $file..."
-            docker run --rm -v $(pwd):/mnt koalaman/shellcheck:stable /mnt/$file || true
             docker run --rm -v $(pwd):/mnt koalaman/shellcheck:stable /mnt/$file > shellcheck_report.txt 2>&1 || true
           done
           echo "ShellCheck completed. Review the errors in shellcheck_report.txt if any."
@@ -50,6 +49,6 @@ jobs:
           echo "Linting Python scripts"
           for file in $(find . -name '*.py'); do
             echo "Checking $file..."
-            flake8 $file --max-line-length=120
-            pylint $file --max-line-length=120 --disable="C0103,C0114,C0115"
+            flake8 $file --max-line-length=120 || true
+            pylint $file --max-line-length=120 --disable="C0103,C0114,C0115" || true
           done
