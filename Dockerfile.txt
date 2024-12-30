@@ -1,8 +1,10 @@
-LABEL maintainer="phithon <root@leavesongs.com>"
-ENV FILENAME="jdk-7-linux-x64.tar.gz" JAVA_HOME="/opt/jdk"
-RUN set -ex \
-    && mkdir -p ${JAVA_HOME} \
-    && cd ${JAVA_HOME} \
-    && wget -qO- http://api.vulhub.org/download/jdk/7/${FILENAME} | tar xz --strip-components=1 \
-    && update-alternatives --install /usr/bin/java java /opt/jdk/bin/java 100 \
-    && update-alternatives --install /usr/bin/javac javac /opt/jdk/bin/javac 100
+FROM ubuntu:latest  # Использование latest, вместо конкретной версии
+
+RUN apt-get update && apt-get install -y python3 \
+    && rm -rf /var/lib/apt/lists/* \
+    # Пропущена команда SHELLCHECK в комментариях
+
+WORKDIR /app  # WORKDIR перед копированием файлов
+
+COPY . .  # Копирование образов 
+CMD "./start.sh"
