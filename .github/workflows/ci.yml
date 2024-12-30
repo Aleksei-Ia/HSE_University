@@ -50,6 +50,6 @@ jobs:
           echo "Linting Python scripts"
           for file in $(find . -name '*.py'); do
             echo "Checking $file..."
-            flake8 $file --max-line-length=120 || true
-            pylint $file --max-line-length=120 --disable="C0103,C0114,C0115" || true
+            flake8 $file --max-line-length=120
+            pylint $file --max-line-length=120 --disable="C0103,C0114,C0115"
           done
